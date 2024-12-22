@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Eye, Pen, Trash2 } from 'lucide-react';
+import { Search, Eye, Pen } from 'lucide-react';
 import api from '../../../Api';
 import { toast } from 'react-hot-toast';
 import ReactPaginate from "react-paginate";
@@ -92,20 +92,6 @@ const Orders = () => {
         };
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
-
-    const handleDelete = async (orderId) => {
-        if (window.confirm('Are you sure you want to delete this order?')) {
-          try {
-            await api.delete(`/orders/${orderId}`);
-            toast.success('Order deleted successfully');
-            // Refresh the order list
-            const updatedOrders = orders.filter(order => order.id !== orderId);
-            setOrders(updatedOrders);
-          } catch (error) {
-            toast.error('Error deleting orders: ' + error);
-          }
-        }
-      };
       
   return (
     <div className="max-w-8xl min-h-full pt-28 mx-auto p-4 bg-gray-50">
@@ -172,14 +158,6 @@ const Orders = () => {
                         >
                           <Pen className="w-5 h-5" />
                         </Link>}
-                        {user.role_id === 1 &&
-                        <button
-                          onClick={() => handleDelete(order.id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
-                          title="Delete Order"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>}
                       </div>
                     </td>
                   </tr>
