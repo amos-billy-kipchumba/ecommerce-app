@@ -1,0 +1,89 @@
+
+
+.cloud-background {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #87CEEB, #FFFFFF); 
+    position: fixed;
+  }
+  
+  .plane-icon {
+    width: 50px;
+    animation: fly-plane 2s ease-in-out infinite;
+    position: relative;
+    z-index: 2; 
+  }
+  
+  @keyframes fly-plane {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+      transform: translate(200px, -200px) rotate(15deg);
+    }
+    100% {
+      transform: translate(400px, -400px) rotate(30deg);
+    }
+  }
+  
+ 
+  .cloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    box-shadow: 60px 20px 40px rgba(255, 255, 255, 0.5);
+    animation: move-clouds 20s linear infinite;
+  }
+  
+  .cloud:nth-child(1) { top: 20%; left: 10%; width: 80px; height: 40px; animation-duration: 22s; }
+  .cloud:nth-child(2) { top: 40%; left: 50%; width: 120px; height: 60px; animation-duration: 25s; }
+  .cloud:nth-child(3) { top: 70%; left: 30%; width: 100px; height: 50px; animation-duration: 18s; }
+  
+  @keyframes move-clouds {
+    0% {
+      transform: translateX(-100vw);
+    }
+    100% {
+      transform: translateX(100vw);
+    }
+  }
+
+
+.typing-text {
+    font-size: 2rem;
+    color: #333;
+    margin-top: 20px;
+    animation: typing 2s steps(10) infinite alternate;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 3px solid #333;
+}
+
+@keyframes typing {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
+  
+
+  
+.spinner-icon {
+    border: 8px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #fecf0d; 
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    bottom: 10px;
+}
+  
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+  

@@ -5,13 +5,19 @@ import "slick-carousel/slick/slick.css";
 import { Provider } from "react-redux";
 import { store, persistor } from "./redux/store";
 import "./index.css";
+import { SidebarProvider } from "./context/SidebarContext";
+import { UserProvider } from "./context/UserContext";
 import App from "./App";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <App />
-    </PersistGate>
-  </Provider>
+  <UserProvider>
+    <SidebarProvider>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <App />
+        </PersistGate>
+      </Provider>
+    </SidebarProvider>
+  </UserProvider>
 );

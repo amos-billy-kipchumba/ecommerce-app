@@ -1,23 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import Product from "../../home/Products/Product";
-import { paginationItems } from "../../../constants";
+import BaseUrl from "../../../BaseUrl";
+import api from "../../../Api";
+import { toast } from 'react-hot-toast';
 
-const items = paginationItems;
 function Items({ currentItems }) {
   return (
     <>
       {currentItems &&
         currentItems.map((item) => (
-          <div key={item._id} className="w-full">
+          <div key={item.id} className="w-full">
             <Product
-              _id={item._id}
-              img={item.img}
-              productName={item.productName}
+              _id={item.id}
+              img={`${BaseUrl}/images/${item.image}`}
+              productName={item.name}
               price={item.price}
-              color={item.color}
-              badge={item.badge}
-              des={item.des}
+              color={item?.color ? item.color : null}
+              badge={item?.badge ? item.badge : null}
+              des={item.description}
             />
           </div>
         ))}
@@ -25,52 +26,72 @@ function Items({ currentItems }) {
   );
 }
 
-const Pagination = ({ itemsPerPage }) => {
-  // Here we use item offsets; we could also use page offsets
-  // following the API or data you're working with.
-  const [itemOffset, setItemOffset] = useState(0);
-  const [itemStart, setItemStart] = useState(1);
+const Pagination = ({brandId, categoryId}) => {
+  const [products, setProducts] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
 
-  // Simulate fetching items from another resources.
-  // (This could be items from props; or items loaded in a local state
-  // from an API endpoint with useEffect and useState)
-  const endOffset = itemOffset + itemsPerPage;
-  //   console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-  const currentItems = items.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(items.length / itemsPerPage);
 
-  // Invoke when user click to request another page.
+
+  useEffect(() => {
+
+    const fetchProducts = async (page) => {
+      try {
+        const response = await api.read(`/products?page=${page}&bId=${brandId}&cId=${categoryId}`);
+        if (response) {
+          setProducts(response.data);
+          setPageCount(response.last_page);
+          setTotalItems(response.total);
+        } else {
+          toast.error("Failed to fetch products.");
+        }
+      } catch (error) {
+        toast.error("Error fetching products: " + error.message);
+      }
+    };
+
+    fetchProducts(1); // Fetch the first page on component mount
+  }, [brandId, categoryId]);
+
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % items.length;
-    setItemOffset(newOffset);
-    // console.log(
-    //   `User requested page number ${event.selected}, which is offset ${newOffset},`
-    // );
-    setItemStart(newOffset);
+    const fetchProducts = async (page) => {
+      try {
+        const response = await api.read(`/products?page=${page}&bId=${brandId}&cId=${categoryId}`);
+        if (response) {
+          setProducts(response.data);
+          setPageCount(response.last_page);
+          setTotalItems(response.total);
+        } else {
+          toast.error("Failed to fetch products.");
+        }
+      } catch (error) {
+        toast.error("Error fetching products: " + error.message);
+      }
+    };
+    const selectedPage = event.selected + 1;
+    fetchProducts(selectedPage);
   };
 
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 mdl:gap-4 lg:gap-10">
-        <Items currentItems={currentItems} />
+        <Items currentItems={products} />
       </div>
       <div className="flex flex-col mdl:flex-row justify-center mdl:justify-between items-center">
         <ReactPaginate
-          nextLabel=""
+          nextLabel="Next"
+          previousLabel="Previous"
           onPageChange={handlePageClick}
           pageRangeDisplayed={3}
           marginPagesDisplayed={2}
           pageCount={pageCount}
-          previousLabel=""
           pageLinkClassName="w-9 h-9 border-[1px] border-lightColor hover:border-gray-500 duration-300 flex justify-center items-center"
-          pageClassName="mr-6"
-          containerClassName="flex text-base font-semibold font-titleFont py-10"
+          pageClassName=""
+          containerClassName="flex text-base flex items-center font-semibold font-titleFont gap-4 py-10"
           activeClassName="bg-black text-white"
         />
-
         <p className="text-base font-normal text-lightText">
-          Products from {itemStart === 0 ? 1 : itemStart} to {endOffset} of{" "}
-          {items.length}
+          Showing {products.length} of {totalItems} products
         </p>
       </div>
     </div>

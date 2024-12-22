@@ -2,30 +2,14 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import NavTitle from "./NavTitle";
 
-const Brand = () => {
+const Brand = ({ brands, setBrandId, brandId }) => {
   const [showBrands, setShowBrands] = useState(true);
-  const brands = [
-    {
-      _id: 9006,
-      title: "Apple",
-    },
-    {
-      _id: 9007,
-      title: "Ultron",
-    },
-    {
-      _id: 9008,
-      title: "Unknown",
-    },
-    {
-      _id: 9009,
-      title: "Shoppers Home",
-    },
-    {
-      _id: 9010,
-      title: "Hoichoi",
-    },
-  ];
+  const [activeBrandId, setActiveBrandId] = useState(null); // State to track the active brand
+
+  const handleBrandClick = (id) => {
+    setBrandId(id); // Pass the selected brand ID to the parent
+    setActiveBrandId(id); // Set the clicked brand as active
+  };
 
   return (
     <div>
@@ -44,10 +28,15 @@ const Brand = () => {
           <ul className="flex flex-col gap-4 text-sm lg:text-base text-[#767676]">
             {brands.map((item) => (
               <li
-                key={item._id}
-                className="border-b-[1px] border-b-[#F0F0F0] pb-2 flex items-center gap-2 hover:text-primeColor hover:border-gray-400 duration-300"
+                key={item.id}
+                onClick={() => handleBrandClick(item.id)}
+                className={`border-b-[1px] border-b-[#F0F0F0] cursor-pointer py-1 px-2 flex items-center gap-2 duration-300 ${
+                  (activeBrandId === item.id && brandId !== '')
+                    ? "bg-gray-200 font-bold text-primeColor" // Active styles
+                    : "hover:text-primeColor hover:border-gray-400"
+                }`}
               >
-                {item.title}
+                {item.name}
               </li>
             ))}
           </ul>
